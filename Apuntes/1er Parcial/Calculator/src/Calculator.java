@@ -24,6 +24,7 @@ public class Calculator extends JFrame {
     private JButton sixButton;
     private JButton threeButton;
     private JButton pointButton;
+    private JButton deleteButton;
     private static final String AC_MODE = "AC";
 
     private static final String C_MODE = "C";
@@ -190,6 +191,11 @@ public class Calculator extends JFrame {
                 if (!isOperating) {
                     setMode(C_MODE, "");
                     displayTextField.setText("0.");
+                    givenNumber += "0.";
+                    return;
+                }
+
+                if(givenNumber.toString().contains(".")){
                     return;
                 }
 
@@ -358,5 +364,23 @@ public class Calculator extends JFrame {
             }
         });
 
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!isOperating) {
+                    setMode(AC_MODE, "");
+                    return;
+                } else {
+                    total = null;
+                    if(!givenNumber.equals("")){
+                        givenNumber = givenNumber.substring(0, givenNumber.length() - 1);
+                    }else {
+                        givenNumber = displayTextField.getText().substring(0, displayTextField.getText().length() - 1);
+                    }
+                }
+
+                displayTextField.setText(givenNumber);
+            }
+        });
     }
 }
