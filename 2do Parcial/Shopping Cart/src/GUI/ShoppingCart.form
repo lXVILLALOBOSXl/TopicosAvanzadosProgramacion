@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="GUI.ShoppingCart">
-  <grid id="27dc6" binding="main" layout-manager="GridLayoutManager" row-count="4" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="3" vgap="3">
+  <grid id="27dc6" binding="main" layout-manager="GridLayoutManager" row-count="5" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="3" vgap="3">
     <margin top="10" left="10" bottom="10" right="10"/>
     <constraints>
       <xy x="20" y="20" width="445" height="666"/>
@@ -32,9 +32,33 @@
               <text value="Product name:"/>
             </properties>
           </component>
-          <component id="d112e" class="javax.swing.JComboBox" binding="measurementCB">
+          <component id="cfdf7" class="javax.swing.JTextField" binding="quantityTF">
             <constraints>
-              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
+              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+            </constraints>
+            <properties/>
+          </component>
+          <component id="7820" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Quantity:"/>
+            </properties>
+          </component>
+          <component id="f996f" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Unit:"/>
+            </properties>
+          </component>
+          <component id="d112e" class="javax.swing.JComboBox" binding="unitCB">
+            <constraints>
+              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="10" height="10"/>
               </grid>
             </constraints>
@@ -47,23 +71,15 @@
               </model>
             </properties>
           </component>
-          <component id="f996f" class="javax.swing.JLabel">
+          <component id="53caf" class="javax.swing.JLabel">
             <constraints>
-              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Measurement:"/>
+              <text value="No items:"/>
             </properties>
           </component>
-          <component id="618ef" class="javax.swing.JCheckBox" binding="taxesCB">
-            <constraints>
-              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Taxes"/>
-            </properties>
-          </component>
-          <component id="cfdf7" class="javax.swing.JTextField" binding="quantityTF">
+          <component id="10989" class="javax.swing.JTextField" binding="noItemsTF">
             <constraints>
               <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -79,14 +95,6 @@
             </constraints>
             <properties/>
           </component>
-          <component id="7820" class="javax.swing.JLabel">
-            <constraints>
-              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Quantity:"/>
-            </properties>
-          </component>
           <component id="95a2a" class="javax.swing.JLabel">
             <constraints>
               <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -97,14 +105,6 @@
           </component>
         </children>
       </grid>
-      <component id="b7da7" class="javax.swing.JButton" binding="payButton" default-binding="true">
-        <constraints>
-          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Pay"/>
-        </properties>
-      </component>
       <grid id="3ed00" binding="panelButtons" custom-create="true" layout-manager="CardLayout" hgap="0" vgap="0">
         <constraints>
           <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -155,6 +155,22 @@
           </scrollpane>
         </children>
       </grid>
+      <component id="b7da7" class="javax.swing.JButton" binding="payButton" default-binding="true">
+        <constraints>
+          <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Pay"/>
+        </properties>
+      </component>
+      <component id="618ef" class="javax.swing.JCheckBox" binding="taxesCHB">
+        <constraints>
+          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Taxes"/>
+        </properties>
+      </component>
     </children>
   </grid>
 </form>
