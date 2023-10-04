@@ -2,6 +2,8 @@ package com.tecsj.notepad;
 
 import java.io.*;
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -16,6 +18,9 @@ public class NotePad extends JFrame implements ActionListener, WindowListener{
     JTextPane jtp = new JTextPane();
     StyledDocument styledDocument = new DefaultStyledDocument();
     File fnameContainer;
+
+    private boolean changesMade = false;
+
 
     public NotePad(){
         jtp.setStyledDocument(styledDocument);
@@ -36,6 +41,24 @@ public class NotePad extends JFrame implements ActionListener, WindowListener{
         jtp.setFont(fnt);
 
         add(sbrText);
+
+        jtp.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                changesMade = true;
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                changesMade = true;
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                changesMade = true;
+            }
+        });
+
 
         JMenuItem newItem = createMenuItem(jmfile,"New","../icons/new.png",this);
         newItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_MASK));
@@ -62,8 +85,8 @@ public class NotePad extends JFrame implements ActionListener, WindowListener{
         copyItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_MASK));
         registerGlobalKeyBinding(KeyEvent.VK_C, KeyEvent.CTRL_MASK, "Copy", this);
         JMenuItem pasteItem = createMenuItem(jmedit,"Paste","../icons/paste.png",this);
-        pasteItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_MASK));
-        registerGlobalKeyBinding(KeyEvent.VK_P, KeyEvent.CTRL_MASK, "Paste", this);
+        pasteItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_MASK));
+        registerGlobalKeyBinding(KeyEvent.VK_V, KeyEvent.CTRL_MASK, "Paste", this);
         jmfile.addSeparator();
         JMenuItem findItem = createMenuItem(jmedit,"Find","../icons/find.png",this);
         findItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_MASK));
@@ -123,22 +146,52 @@ public class NotePad extends JFrame implements ActionListener, WindowListener{
 
     private void registerGlobalKeyBinding(int keyCode, int modifiers, String actionKey, ActionListener actionListener) {
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
-            if ((e.getKeyCode() == keyCode) && ((e.getModifiers() & modifiers) != 0)) {
-                ActionEvent actionEvent = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, actionKey);
-                actionListener.actionPerformed(actionEvent);
-                return true; // Consume the event
+            if (e.getID() == KeyEvent.KEY_PRESSED && (e.getKeyCode() == keyCode) && ((e.getModifiers() & modifiers) != 0)) {
+                if (!e.isConsumed()) {
+                    ActionEvent actionEvent = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, actionKey);
+                    actionListener.actionPerformed(actionEvent);
+                    e.consume();
+                    return true;
+                }
             }
-            return false; // Allow other key events to be processed
+            return false;
         });
+    }
+
+    private void checkUnsavedChanges() {
+        if (changesMade) {
+            int option = JOptionPane.showConfirmDialog(
+                    this, // Use your main frame or parent component
+                    "There are unsaved changes. Do you want to save them?",
+                    "Unsaved Changes",
+                    JOptionPane.YES_NO_CANCEL_OPTION
+            );
+
+            if (option == JOptionPane.YES_OPTION) {
+                // Save changes
+                saveChanges();
+            } else if (option == JOptionPane.CANCEL_OPTION) {
+                // User canceled the action
+                return;
+            }
+            // If the user chooses 'No', proceed without saving
+        }
+    }
+
+    private void saveChanges() {
+        ActionEvent saveEvent = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Save as ...");
+        actionPerformed(saveEvent);
     }
 
     public void actionPerformed(ActionEvent e){
         JFileChooser jfc = new JFileChooser();
         if(e.getActionCommand().equals("New")){
+            checkUnsavedChanges();
             this.setTitle("UntitledNew.txt - Notepad");
             jtp.setText("");
             fnameContainer = null;
         }else if (e.getActionCommand().equals("Open")){
+            checkUnsavedChanges();
             int ret = jfc.showDialog(null,"Open");
             if(ret == JFileChooser.APPROVE_OPTION){
                 try {
@@ -196,6 +249,7 @@ public class NotePad extends JFrame implements ActionListener, WindowListener{
                 }
             }
         }else if (e.getActionCommand().equals("Exit")){
+            checkUnsavedChanges();
             Exiting();
         }else if (e.getActionCommand().equals("Copy")){
             jtp.copy();
