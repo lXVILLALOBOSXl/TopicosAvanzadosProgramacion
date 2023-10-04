@@ -5,6 +5,8 @@ import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static com.tecsj.util.GUI.convertJMenuItemToJButton;
 import static com.tecsj.util.GUI.createMenuItem;
@@ -32,31 +34,48 @@ public class NotePad extends JFrame implements ActionListener, WindowListener{
         sbrText.setVisible(true);
 
         jtp.setFont(fnt);
-        // Enable line wrapping
-        //jtp.putClientProperty(JTextPane.W3C_LENGTH_UNITS, true);
-
-
 
         add(sbrText);
 
         JMenuItem newItem = createMenuItem(jmfile,"New","../icons/new.png",this);
+        newItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_MASK));
+        registerGlobalKeyBinding(KeyEvent.VK_N, KeyEvent.CTRL_MASK, "New", this);
         JMenuItem openItem = createMenuItem(jmfile,"Open","../icons/open.png",this);
+        openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK));
+        registerGlobalKeyBinding(KeyEvent.VK_O, KeyEvent.CTRL_MASK, "Open", this);
         JMenuItem saveItem = createMenuItem(jmfile,"Save","../icons/save.png",this);
+        saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
+        registerGlobalKeyBinding(KeyEvent.VK_S, KeyEvent.CTRL_MASK, "Save", this);
         JMenuItem saveAsItem = createMenuItem(jmfile,"Save as ...","../icons/saveAsText@3x.png",this);
+        saveAsItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK));
+        registerGlobalKeyBinding(KeyEvent.VK_S, KeyEvent.CTRL_MASK| KeyEvent.SHIFT_MASK, "Save as ...", this);
         jmfile.addSeparator();
         JMenuItem exitItem = createMenuItem(jmfile,"Exit","../icons/door_out.png",this);
+        exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_MASK));
+        registerGlobalKeyBinding(KeyEvent.VK_E, KeyEvent.CTRL_MASK, "Exit", this);
 
 
         JMenuItem cutItem = createMenuItem(jmedit,"Cut","../icons/cut.png",this);
+        cutItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, KeyEvent.CTRL_MASK));
+        registerGlobalKeyBinding(KeyEvent.VK_X, KeyEvent.CTRL_MASK, "Cut", this);
         JMenuItem copyItem = createMenuItem(jmedit,"Copy","../icons/copy.png",this);
+        copyItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_MASK));
+        registerGlobalKeyBinding(KeyEvent.VK_C, KeyEvent.CTRL_MASK, "Copy", this);
         JMenuItem pasteItem = createMenuItem(jmedit,"Paste","../icons/paste.png",this);
+        pasteItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_MASK));
+        registerGlobalKeyBinding(KeyEvent.VK_P, KeyEvent.CTRL_MASK, "Paste", this);
         jmfile.addSeparator();
         JMenuItem findItem = createMenuItem(jmedit,"Find","../icons/find.png",this);
+        findItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_MASK));
+        registerGlobalKeyBinding(KeyEvent.VK_F, KeyEvent.CTRL_MASK, "Find", this);
 
         JMenuItem fontItem = createMenuItem(jmformat,"Font","../icons/font.png",this);
+        fontItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_MASK));
+        registerGlobalKeyBinding(KeyEvent.VK_L, KeyEvent.CTRL_MASK, "Font", this);
         JMenuItem backgroundItem = createMenuItem(jmformat,"Background","../icons/folder_palette.png",this);
-        JMenuItem adjustItem = createMenuItem(jmformat,"Adjust","../icons/T_WordWrap_Sm_N@3x.png",this);
-
+        backgroundItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_MASK));
+        registerGlobalKeyBinding(KeyEvent.VK_B, KeyEvent.CTRL_MASK, "Background", this);
+        createMenuItem(jmformat,"Adjust","../icons/T_WordWrap_Sm_N@3x.png",this);
 
         JMenuItem aboutItem = createMenuItem(jmhelp,"About","../icons/help_about.png",this);
 
@@ -102,6 +121,17 @@ public class NotePad extends JFrame implements ActionListener, WindowListener{
 
     }
 
+    private void registerGlobalKeyBinding(int keyCode, int modifiers, String actionKey, ActionListener actionListener) {
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
+            if ((e.getKeyCode() == keyCode) && ((e.getModifiers() & modifiers) != 0)) {
+                ActionEvent actionEvent = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, actionKey);
+                actionListener.actionPerformed(actionEvent);
+                return true; // Consume the event
+            }
+            return false; // Allow other key events to be processed
+        });
+    }
+
     public void actionPerformed(ActionEvent e){
         JFileChooser jfc = new JFileChooser();
         if(e.getActionCommand().equals("New")){
@@ -116,7 +146,9 @@ public class NotePad extends JFrame implements ActionListener, WindowListener{
                     OpenFile(fyl.getAbsolutePath());
                     this.setTitle(fyl.getName() + " - Notepad");
                     fnameContainer = fyl;
-                }catch (IOException ers){}
+                }catch (IOException ers){
+                    System.out.println("error");
+                }
             }
         } else if (e.getActionCommand().equals("Save as ...")) {
             if(fnameContainer != null){
@@ -134,7 +166,9 @@ public class NotePad extends JFrame implements ActionListener, WindowListener{
                     SaveFile(fyl.getAbsolutePath());
                     this.setTitle(fyl.getName() + " - Notepad");
                     fnameContainer = fyl;
-                }catch (Exception ets){}
+                }catch (Exception ets){
+                    System.out.println("error");
+                }
             }
         }else if (e.getActionCommand().equals("Save")) {
             if (fnameContainer != null) {
@@ -260,7 +294,7 @@ public class NotePad extends JFrame implements ActionListener, WindowListener{
     }
 
     public void OpenFile(String fname) throws IOException{
-        BufferedReader d = new BufferedReader(new InputStreamReader(new FileInputStream(fname)));
+        BufferedReader d = new BufferedReader(new InputStreamReader(Files.newInputStream(Paths.get(fname))));
         String l;
         jtp.setText("");
         setCursor(new Cursor(Cursor.WAIT_CURSOR));
@@ -273,7 +307,7 @@ public class NotePad extends JFrame implements ActionListener, WindowListener{
 
     public void SaveFile(String fname) throws IOException{
         setCursor(new Cursor(Cursor.WAIT_CURSOR));
-        DataOutputStream o = new DataOutputStream(new FileOutputStream(fname));
+        DataOutputStream o = new DataOutputStream(Files.newOutputStream(Paths.get(fname)));
         o.writeBytes(jtp.getText());
         o.close();
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -297,10 +331,6 @@ public class NotePad extends JFrame implements ActionListener, WindowListener{
     public void Exiting(){
         System.exit(0);
     }
-
-
-
-
 
 
 }
