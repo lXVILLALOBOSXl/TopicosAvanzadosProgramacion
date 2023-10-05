@@ -13,7 +13,7 @@ public class Racket {
     // Constants for default values
     public static final int X_DEFAULT = 0;
     public static final int Y_DEFAULT = 0;
-    public static final int WIDTH_DEFAULT = 150;
+    public static final int WIDTH_DEFAULT = 100;
     public static final int HEIGHT_DEFAULT = 15;
     public static final Color COLOR_DEFAULT = Color.BLACK;
     public static final int SPEED_DEFAULT = 28;
