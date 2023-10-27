@@ -66,7 +66,7 @@ public class GUI extends JFrame {
         jdpBorn = new JDatePickerImpl(datePanel,new DateLabelFormatter());
         //Establecer propiedades de la ventana
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setPreferredSize(new Dimension(1000,5000));
+        this.setPreferredSize(new Dimension(600,400));
         this.setTitle("DataBase");
         this.setLocationRelativeTo(null);
 

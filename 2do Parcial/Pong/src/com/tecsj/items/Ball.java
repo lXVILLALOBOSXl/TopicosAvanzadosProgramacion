@@ -14,7 +14,7 @@ public class Ball {
     public static final int X_DEFAULT = 0;
     public static final int Y_DEFAULT = 0;
     public static final int VX_DEFAULT = 0;
-    public static final int VY_DEFAULT = 2;
+    public static final int VY_DEFAULT = 4;
     public static final int RADIUS_DEFAULT = 10;
 
     public static final Color COLOR_DEFAULT = Color.green;
