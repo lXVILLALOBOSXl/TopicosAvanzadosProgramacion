@@ -1,0 +1,7 @@
+<resources>
+    <string-array name="currencies_array">
+        <item>USD</item>
+        <item>MXN</item>
+        <!-- Add other currencies if needed -->
+    </string-array>
+</resources>
